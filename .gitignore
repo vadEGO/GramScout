@@ -34,8 +34,11 @@ Thumbs.db
 *.log
 logs/
 
-# Overstory
-.overstory/
+# Agent skills (dev-only, not needed to run)
+.agents/
+.claude/
+skills/
+skills-lock.json
 
 # Secrets
 *.key
