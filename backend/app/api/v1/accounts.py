@@ -3,7 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
 
 from app.core.database import get_db
-from app.models.account import AccountStatus, AccountFormat
+from app.models.account import AccountStatus
 from app.services.account_service import AccountService
 
 
@@ -12,14 +12,13 @@ router = APIRouter(prefix="/accounts", tags=["accounts"])
 
 @router.get("")
 async def list_accounts(
-    status: Optional[str] = None,
+    status: Optional[AccountStatus] = None,
     limit: int = 100,
     offset: int = 0,
     db: AsyncSession = Depends(get_db),
 ):
-    account_status = AccountStatus(status) if status else None
     accounts = await AccountService.get_all(
-        db, status=account_status, limit=limit, offset=offset
+        db, status=status, limit=limit, offset=offset
     )
     return [
         {
@@ -77,9 +76,9 @@ async def create_account(
 
 @router.patch("/{account_id}/status")
 async def update_status(
-    account_id: str, status: str, db: AsyncSession = Depends(get_db)
+    account_id: str, status: AccountStatus, db: AsyncSession = Depends(get_db)
 ):
-    account = await AccountService.update_status(db, account_id, AccountStatus(status))
+    account = await AccountService.update_status(db, account_id, status)
     if not account:
         raise HTTPException(status_code=404, detail="Account not found")
     return {"id": account.id, "status": account.status.value}
