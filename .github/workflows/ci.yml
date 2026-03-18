@@ -22,5 +22,5 @@ jobs:
       - name: Check frontend
         run: |
           cd frontend
-          npm ci
+          npm install
           npx tsc --noEmit || true
